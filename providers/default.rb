@@ -8,6 +8,9 @@ action :run do
   code = @new_resource.code || @new_resource.script
   password = @new_resource.password
   script_path = "#{node['boxstarter']['tmp_dir']}/package.ps1"
+
+  directory default['boxstarter']['tmp_dir']
+
   template script_path do
   	source "package.erb"
     cookbook "boxstarter"
