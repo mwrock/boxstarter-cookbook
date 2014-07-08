@@ -1,6 +1,6 @@
 require 'chefspec'
 
-describe 'boxstarter_test::code_in_name' do
+describe 'boxstarter_test::code_in_code_block' do
   
   let(:chef_run) do
   	ChefSpec::Runner.new(
@@ -16,7 +16,7 @@ describe 'boxstarter_test::code_in_name' do
   end
   it "writes the install command to the command file" do
     expect(chef_run).to render_file('/boxstarter/tmp/boxstarter.ps1').with_content(/"\/boxstarter\/tmp\/package.ps1"/)
-  end
+  end  
   it "includes password in the command file" do
     expect(chef_run).to render_file('/boxstarter/tmp/boxstarter.ps1').with_content(/\$plain_password = 'mypassword'/)
   end    
@@ -26,4 +26,5 @@ describe 'boxstarter_test::code_in_name' do
   it "executes the wrapper" do
     expect(chef_run).to run_execute('/boxstarter/tmp/boxstarter.bat')
   end
+
 end

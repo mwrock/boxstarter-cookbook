@@ -1,5 +1,14 @@
 Import-Module "$env:AppData\Boxstarter\Boxstarter.Chocolatey\Boxstarter.Chocolatey.psd1"
 $identity = [System.Security.Principal.WindowsIdentity]::GetCurrent()
-$password = ConvertTo-SecureString <%= @password %> -asplaintext -force
-$creds = New-Object System.Management.Automation.PSCredential ($identity.Name, $password)
-Install-BoxstarterPackage -PackageName $env:Temp\boxstarter\package.ps1 -credential $creds
+$plain_password = '<%= @password %>'
+
+if($plain_password.length -gt 0) {
+	$password = ConvertTo-SecureString $plain_password -asplaintext -force
+	$creds = New-Object System.Management.Automation.PSCredential ($identity.Name, $password)
+}
+
+$params = @{
+	PackageName = "<%= @temp_dir %>/package.ps1"
+}
+if($creds){$params['credential'] = $creds}
+Install-BoxstarterPackage @params

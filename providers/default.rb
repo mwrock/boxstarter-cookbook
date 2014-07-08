@@ -6,21 +6,34 @@ end
 
 action :run do
   code = @new_resource.code || @new_resource.script
-  script_path = "#{node['boxstarter']['tmp_dir']}/scriptblock.ps1"
+  password = @new_resource.password
+  script_path = "#{node['boxstarter']['tmp_dir']}/package.ps1"
   template script_path do
   	source "package.erb"
+    cookbook "boxstarter"
     variables({
       :code => code
     })
   end
 
-  command_path = "#{node['boxstarter']['tmp_dir']}/scriptblockboxstarter.bat"
+  command_path = "#{node['boxstarter']['tmp_dir']}/boxstarter.ps1"
   template command_path do
-    source "ps_wrapper.erb"
+    source "boxstarter_command.erb"
+    cookbook "boxstarter"
     variables({
-      :command => "-file '#{script_path}'"
+      :password => password,
+      :temp_dir => node['boxstarter']['tmp_dir']
     })
   end
 
-  execute command_path
+  batch_path = "#{node['boxstarter']['tmp_dir']}/boxstarter.bat"
+  template batch_path do
+    source "ps_wrapper.erb"
+    cookbook "boxstarter"
+    variables({
+      :command => "-file '#{command_path}'"
+    })
+  end
+
+  execute batch_path
 end

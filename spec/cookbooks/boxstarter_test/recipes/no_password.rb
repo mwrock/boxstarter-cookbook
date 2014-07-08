@@ -1,0 +1,1 @@
+boxstarter "Install-WindowsUpdate -acceptEula"
