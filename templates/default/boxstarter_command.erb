@@ -11,4 +11,4 @@ $params = @{
 	PackageName = "<%= @temp_dir %>/package.ps1"
 }
 if($creds){$params['credential'] = $creds}
-Install-BoxstarterPackage @params
+Install-BoxstarterPackage @params -verbose
