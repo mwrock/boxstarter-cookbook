@@ -34,7 +34,7 @@ action :run do
     source "ps_wrapper.erb"
     cookbook "boxstarter"
     variables({
-      :command => "-file '#{command_path}'"
+      :command => "-file #{command_path}"
     })
   end
 
