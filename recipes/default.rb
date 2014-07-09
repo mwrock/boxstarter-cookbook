@@ -1,5 +1,7 @@
 return 'platform not supported' if node['platform_family'] != 'windows'
 
+directory default['boxstarter']['tmp_dir']
+
 cookbook_file "bootstrapper.ps1" do
   path "#{ENV['TEMP']}/boxstarter/bootstrapper.ps1"
   action :create
