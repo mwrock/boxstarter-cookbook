@@ -9,7 +9,7 @@ action :run do
   password = @new_resource.password
   script_path = "#{node['boxstarter']['tmp_dir']}/package.ps1"
 
-  directory default['boxstarter']['tmp_dir']
+  directory node['boxstarter']['tmp_dir']
 
   template script_path do
   	source "package.erb"
