@@ -55,6 +55,12 @@ def child_of_boxstarter(parent)
 
   wmi = WIN32OLE.connect("winmgmts://")
   parent_proc = wmi.ExecQuery("Select * from Win32_Process where ProcessID=#{parent}")
+  
+  if parent_proc.each.count == 0
+    Chef::Log.info "***No process for pid #{parent}. Finished looking for boxstarter parents***"
+    return false
+  end
+
   proc = parent_proc.each.next
 
   if proc.CommandLine.downcase.include?('boxstarter')
