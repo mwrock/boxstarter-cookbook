@@ -7,7 +7,7 @@ def whyrun_supported?
 end
 
 action :run do
-  return if child_of_boxstarter
+  return if child_of_boxstarter(Process.ppid)
 
   code = @new_resource.code || @new_resource.script
   password = @new_resource.password
@@ -45,7 +45,7 @@ action :run do
   execute batch_path
 end
 
-def child_of_boxstarter(parent = Process.ppid)
+def child_of_boxstarter(parent)
   Chef::Log.info "***Looking for boxstarter parents at pid #{parent}***"
 
   if parent.nil?
@@ -61,6 +61,6 @@ def child_of_boxstarter(parent = Process.ppid)
     Chef::Log.info "***Found boxstarter parent pid #{parent}...returning true***"
     return true 
   end
-  
-  return child_of_boxstarter(parent)
+
+  return child_of_boxstarter(proc.ParentProcessID)
 end
