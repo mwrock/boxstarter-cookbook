@@ -50,7 +50,7 @@ def child_of_boxstarter(pid = Process.pid)
   return false if parent.nil?
   wmi = WIN32OLE.connect("winmgmts://")
   parent_proc = wmi.ExecQuery("Select * from Win32_Process where ProcessID=#{parent}")
-  proc = parent.each.next
+  proc = parent_proc.each.next
   return true if proc.CommandLine.downcase.include?('boxstarter')
   return child_of_boxstarter(parent)
 end
