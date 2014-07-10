@@ -68,6 +68,6 @@ def child_of_boxstarter(parent)
     return true 
   end
 
-  Chef::Log.info "***Proc was running proc.Name...trying its parent***"
+  Chef::Log.info "***Proc was running #{proc.Name}...trying its parent***"
   return child_of_boxstarter(proc.ParentProcessID)
 end
