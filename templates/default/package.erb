@@ -1,4 +1,12 @@
-<%= @code %>
+try {
+  <%= @code %>
+
+   Write-ChocolateySuccess 'Boxstarter-Cookbook-Block'
+} catch {
+  Write-ChocolateyFailure 'Boxstarter-Cookbook-Block' $_.ToString()
+  throw
+}
+
 if(Test-PendingReboot) {Invoke-Reboot}
 if(!(Test-ChildOfRuby)){Chef-Client}
 
