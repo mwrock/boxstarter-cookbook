@@ -45,12 +45,22 @@ action :run do
   execute batch_path
 end
 
-def child_of_boxstarter(pid = Process.pid)
-  parent = Process.ppid
-  return false if parent.nil?
+def child_of_boxstarter(parent = Process.ppid)
+  Chef::Log.info "***Looking for boxstarter parents at pid #{parent}***"
+
+  if parent.nil?
+    Chef::Log.info "***No more parents. Finished looking for boxstarter parents***"
+    return false 
+  end
+
   wmi = WIN32OLE.connect("winmgmts://")
   parent_proc = wmi.ExecQuery("Select * from Win32_Process where ProcessID=#{parent}")
   proc = parent_proc.each.next
-  return true if proc.CommandLine.downcase.include?('boxstarter')
+
+  if proc.CommandLine.downcase.include?('boxstarter')
+    Chef::Log.info "***Found boxstarter parent pid #{parent}...returning true***"
+    return true 
+  end
+  
   return child_of_boxstarter(parent)
 end
