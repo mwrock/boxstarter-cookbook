@@ -1,3 +1,5 @@
+require 'win32ole'
+
 use_inline_resources
 
 def whyrun_supported?
@@ -5,6 +7,8 @@ def whyrun_supported?
 end
 
 action :run do
+  return if child_of_boxstarter
+
   code = @new_resource.code || @new_resource.script
   password = @new_resource.password
   script_path = "#{node['boxstarter']['tmp_dir']}/package.ps1"
@@ -39,4 +43,14 @@ action :run do
   end
 
   execute batch_path
+end
+
+def child_of_boxstarter(pid = Process.pid)
+  parent = Process.ppid
+  return false if parent.nil?
+  wmi = WIN32OLE.connect("winmgmts://")
+  parent_proc = wmi.ExecQuery("Select * from Win32_Process where ProcessID=#{parent}")
+  proc = parent.each.next
+  return true if proc.CommandLine.downcase.include?('boxstarter')
+  return child_of_boxstarter(parent)
 end
