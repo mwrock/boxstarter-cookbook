@@ -63,7 +63,7 @@ def child_of_boxstarter(parent)
 
   proc = parent_proc.each.next
 
-  if proc.CommandLine.downcase.include?('boxstarter')
+  if !proc.CommandLine.nil? && proc.CommandLine.downcase.include?('boxstarter')
     Chef::Log.info "***Found boxstarter parent pid #{parent}...returning true***"
     return true 
   end
