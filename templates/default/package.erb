@@ -1,4 +1,5 @@
 try {
+  $start_chef_client_onreboot = <%= @start_chef_client_onreboot %>
   <%= @code %>
 
    Write-ChocolateySuccess 'Boxstarter-Cookbook-Block'
@@ -8,13 +9,17 @@ try {
 }
 
 if(Test-PendingReboot) {Invoke-Reboot}
-if(!(Test-ChildOfRuby)){Chef-Client}
+if($start_chef_client_onreboot -and !(Test-ChildOfRuby)){Chef-Client}
 
 function Test-ChildOfRuby($ID = $PID) {
    $parent = (Get-WmiObject -Class Win32_Process -Filter "ProcessID=$ID").ParentProcessID 
     if($parent -eq $null) { return $false } else {
     	$parentProc = Get-WmiObject -Class Win32_Process -Filter "ProcessID=$parent"
-    	if($parentProc.Name -eq "Ruby.exe") {return $true} else {
+    	if($parentProc.Name -eq "Ruby.exe") {return $true} 
+    	elseif($parentProc.Name -eq "winrshost.exe") {
+            return $false
+    	}
+    	else {
     		return Test-ChildOfRuby $parent
     	}
     }

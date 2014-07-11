@@ -1,6 +1,7 @@
 Import-Module "$env:AppData\Boxstarter\Boxstarter.Chocolatey\Boxstarter.Chocolatey.psd1"
 $identity = [System.Security.Principal.WindowsIdentity]::GetCurrent()
 $plain_password = '<%= @password %>'
+$disable_reboots = <%= @disable_reboots %>
 
 if($plain_password.length -gt 0) {
 	$password = ConvertTo-SecureString $plain_password -asplaintext -force
@@ -11,4 +12,5 @@ $params = @{
 	PackageName = "<%= @temp_dir %>/package.ps1"
 }
 if($creds){$params['credential'] = $creds}
+if($disable_reboots){$params['DisableReboots'] = $true}
 Install-BoxstarterPackage @params -verbose

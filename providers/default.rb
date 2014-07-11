@@ -11,6 +11,8 @@ action :run do
 
   code = @new_resource.code || @new_resource.script
   password = @new_resource.password
+  disable_reboots = @new_resource.disable_reboots
+  start_chef_client_onreboot = @new_resource.start_chef_client_onreboot
   script_path = "#{node['boxstarter']['tmp_dir']}/package.ps1"
 
   directory node['boxstarter']['tmp_dir']
@@ -19,7 +21,8 @@ action :run do
   	source "package.erb"
     cookbook "boxstarter"
     variables({
-      :code => code
+      :code => code,
+      :start_chef_client_onreboot => start_chef_client_onreboot
     })
   end
 
@@ -29,7 +32,8 @@ action :run do
     cookbook "boxstarter"
     variables({
       :password => password,
-      :temp_dir => node['boxstarter']['tmp_dir']
+      :temp_dir => node['boxstarter']['tmp_dir'],
+      :disable_reboots => disable_reboots
     })
   end
 
