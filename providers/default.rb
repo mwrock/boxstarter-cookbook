@@ -34,7 +34,7 @@ action :run do
     variables({
       :password => password,
       :disable_boxstarter_restart => disable_boxstarter_restart,
-      :is_remote => running_remote(Process.ppid)
+      :is_remote => running_remote(Process.ppid),
       :temp_dir => node['boxstarter']['tmp_dir'],
       :disable_reboots => disable_reboots
     })
