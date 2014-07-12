@@ -46,7 +46,11 @@ action :run do
     })
   end
 
-  execute batch_path
+  cmd = Mixlib::ShellOut.new(batch_path)
+  Chef::Log.debug(cmd)
+  cmd.live_stream = true
+  cmd.timeout = 7200
+  cmd.run_command
 end
 
 def child_of_boxstarter(parent)
