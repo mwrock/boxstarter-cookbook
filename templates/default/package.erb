@@ -1,5 +1,5 @@
 try {
-  $start_chef_client_onreboot = <%= @start_chef_client_onreboot %>
+  $start_chef_client_onreboot = $<%= @start_chef_client_onreboot %>
   <%= @code %>
 
    Write-ChocolateySuccess 'Boxstarter-Cookbook-Block'

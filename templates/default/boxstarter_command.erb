@@ -2,7 +2,9 @@ $module_dir = Get-ChildItem -Path $env:SystemDrive\Users\*\Appdata\Roaming\Boxst
 Import-Module "$($module_dir.FullName)\Boxstarter.Chocolatey.psd1"
 $identity = [System.Security.Principal.WindowsIdentity]::GetCurrent()
 $plain_password = '<%= @password %>'
-$disable_reboots = <%= @disable_reboots %>
+$disable_reboots = $<%= @disable_reboots %>
+$disable_boxstarter_restart = $<%= @disable_boxstarter_restart %>
+$isRemote = $<%= @is_remote %>
 
 if($plain_password.length -gt 0) {
 	$password = ConvertTo-SecureString $plain_password -asplaintext -force
@@ -12,6 +14,13 @@ if($plain_password.length -gt 0) {
 $params = @{
 	PackageName = "<%= @temp_dir %>/package.ps1"
 }
-if($creds){$params['credential'] = $creds}
+if($creds -and !($disable_boxstarter_restart)){$params['credential'] = $creds}
 if($disable_reboots){$params['DisableReboots'] = $true}
-Install-BoxstarterPackage @params -verbose
+
+if($isRemote -and $creds){
+	Create-BoxstarterTask $creds
+}
+
+$result = Install-BoxstarterPackage @params -verbose
+
+if($result.errors.count -gt 0){ throw $result.errors }
