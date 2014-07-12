@@ -121,5 +121,5 @@ def running_remote(parent)
   end
 
   Chef::Log.info "***Proc was running #{proc.Name}...trying its parent***"
-  return child_of_boxstarter(proc.ParentProcessID)
+  return running_remote(proc.ParentProcessID)
 end
