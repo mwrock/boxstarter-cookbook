@@ -72,7 +72,7 @@ def child_of_boxstarter(parent)
     return true 
   end
 
-  if proc.Name == 'winrshost.exe'
+  if proc.Name == 'services.exe'
     Chef::Log.info "***Proc was running #{proc.Name}...quitting since this is the effective trunk***"
     return false
   end

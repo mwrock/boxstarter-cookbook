@@ -15,8 +15,8 @@ function Test-ChildOfRuby($ID = $PID) {
    $parent = (Get-WmiObject -Class Win32_Process -Filter "ProcessID=$ID").ParentProcessID 
     if($parent -eq $null) { return $false } else {
     	$parentProc = Get-WmiObject -Class Win32_Process -Filter "ProcessID=$parent"
-    	if($parentProc.Name -eq "Ruby.exe") {return $true} 
-    	elseif($parentProc.Name -eq "winrshost.exe") {
+    	if($parentProc.Name -eq "ruby.exe") {return $true} 
+    	elseif($parentProc.Name -eq "services.exe") {
             return $false
     	}
     	else {
