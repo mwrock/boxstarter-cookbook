@@ -18,6 +18,7 @@ if($creds -and !($disable_boxstarter_restart)){$params['credential'] = $creds}
 if($disable_reboots){$params['DisableReboots'] = $true}
 
 if($isRemote -and $creds){
+	Import-Module "$($module_dir.FullName)\..\Boxstarter.Common\Boxstarter.Common.psd1"
 	Create-BoxstarterTask $creds
 }
 
