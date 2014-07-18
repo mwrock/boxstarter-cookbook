@@ -1,0 +1,18 @@
+---
+driver:
+  name: vagrant
+
+provisioner:
+  name: chef_zero
+
+platforms:
+  - name: windows-2012R2
+  driver:
+    box: mwrock/Windows2012R2
+    communicator: winrm
+
+suites:
+  - name: default
+    run_list:
+      - recipe[boxstarter::default]
+    attributes:
