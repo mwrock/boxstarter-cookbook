@@ -1,4 +1,4 @@
-require 'win32ole'
+require 'win32ole' if node['platform_family'] != 'windows'
 
 use_inline_resources
 
