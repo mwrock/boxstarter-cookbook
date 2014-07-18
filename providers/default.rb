@@ -1,5 +1,3 @@
-require 'win32ole' if node['platform_family'] != 'windows'
-
 use_inline_resources
 
 def whyrun_supported?
@@ -7,6 +5,7 @@ def whyrun_supported?
 end
 
 action :run do
+  require 'win32ole'
   return if child_of_boxstarter(Process.ppid)
 
   code = @new_resource.code || @new_resource.script
