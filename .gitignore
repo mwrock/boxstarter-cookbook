@@ -1,4 +1,4 @@
 .chef/
-.chef.kitchen/
+.kitchen/
 .kitchen.local.yml
 .kitchen/logs
