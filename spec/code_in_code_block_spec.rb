@@ -21,7 +21,10 @@ describe 'boxstarter_test::code_in_code_block' do
     expect(chef_run).to render_file('/boxstarter/tmp/boxstarter.ps1').with_content(/\$plain_password = 'mypassword'/)
   end    
   it "writes the wrapper file" do
-    expect(chef_run).to render_file('/boxstarter/tmp/boxstarter.bat').with_content(/-file '\/boxstarter\/tmp\/boxstarter.ps1'/)
+    expect(chef_run).to create_template('/boxstarter/tmp/boxstarter.bat').with(
+      source: "ps_wrapper.erb",
+      cookbook: "boxstarter",
+      variables: {:command => "-file /boxstarter/tmp/boxstarter.ps1"})
   end
   it "executes the wrapper" do
     expect(chef_run).to run_execute('/boxstarter/tmp/boxstarter.bat')
