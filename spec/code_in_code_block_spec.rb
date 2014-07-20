@@ -11,6 +11,9 @@ describe 'boxstarter_test::code_in_code_block' do
   	end.converge(described_recipe)
   end
 
+  it "creates temp directory" do
+    expect(chef_run).to create_directory('/boxstarter/tmp')
+  end
   it "writes code to package file" do
     expect(chef_run).to render_file('/boxstarter/tmp/package.ps1').with_content(/Install-WindowsUpdate -acceptEula/)
   end
