@@ -22,6 +22,18 @@ describe 'boxstarter provider' do
   it "creates temp directory" do
     expect(chef_run).to create_directory('/boxstarter/tmp')
   end
+  it "copies boxstarter installer" do
+    expect(chef_run).to create_cookbook_file('/boxstarter/tmp/bootstrapper.ps1')
+  end
+  it "writes installer wrapper" do
+    expect(chef_run).to create_template('/boxstarter/tmp/setup.bat').with(
+      source: "ps_wrapper.erb",
+      variables: {
+        :command => "-command \". '%~dp0bootstrapper.ps1';Get-Boxstarter -force\""})
+  end
+  it "executes the installer" do
+    expect(chef_run).to run_execute('/boxstarter/tmp/setup.bat')
+  end
   it "writes code to package file" do
     expect(chef_run).to create_template('/boxstarter/tmp/package.ps1').with(
       source: "package.erb",
