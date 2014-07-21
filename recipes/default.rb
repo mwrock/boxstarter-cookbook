@@ -1,4 +1,5 @@
 return 'platform not supported' if node['platform_family'] != 'windows'
+Chef::Provider::Boxstarter.send(:include, Boxstarter::Helper)
 
 return if ::Dir.exist?(node['boxstarter']['tmp_dir'])
 

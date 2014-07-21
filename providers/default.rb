@@ -6,7 +6,7 @@ end
 
 action :run do
   require 'win32ole'
-  
+
   return if check_process_tree(Process.ppid, :CommandLine, 'boxstarter')
 
   code = @new_resource.code || @new_resource.script
@@ -15,8 +15,6 @@ action :run do
   disable_boxstarter_restart = @new_resource.disable_boxstarter_restart
   start_chef_client_onreboot = @new_resource.start_chef_client_onreboot
   script_path = "#{node['boxstarter']['tmp_dir']}/package.ps1"
-
-  directory node['boxstarter']['tmp_dir']
 
   template script_path do
   	source "package.erb"
