@@ -75,4 +75,23 @@ describe 'boxstarter provider' do
       expect {chef_run}.to raise_error
     end
   end
+
+  context 'when spawned from another boxstarter run' do
+    let(:chef_run) do
+      ChefSpec::Runner.new(
+        cookbook_path: ["#{File.dirname(__FILE__)}/../..","#{File.dirname(__FILE__)}/cookbooks"]) do | node |
+        node.set['boxstarter']['tmp_dir'] = '/boxstarter/tmp'
+        node.automatic['platform_family'] = 'windows'
+      end.converge('boxstarter_test::default')
+    end
+    before do
+      require 'win32ole'
+      allow(WIN32OLE).to receive(:connect).with("winmgmts://").and_return(
+        Boxstarter::SpecHelper::MockWMI.new(['proc','boxstarter']))
+    end
+
+    it "does not execute the wrapper" do
+      expect(chef_run).not_to run_execute('/boxstarter/tmp/boxstarter.bat')
+    end
+  end
 end
