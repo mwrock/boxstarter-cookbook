@@ -25,7 +25,7 @@ describe 'boxstarter_test::set_all_attributes' do
       cookbook: "boxstarter",
       variables: {
         :code => "    Install-WindowsUpdate -acceptEula\n",
-        :start_chef_client_onreboot => true})
+        :start_chef_client_onreboot => false})
   end
   it "writes command file with the correct parameters" do
     expect(chef_run).to create_template('/boxstarter/tmp/boxstarter.ps1').with(
@@ -33,7 +33,7 @@ describe 'boxstarter_test::set_all_attributes' do
       cookbook: "boxstarter",
       variables: {
         :password => "mypassword",
-        :disable_boxstarter_restart => false,
+        :disable_boxstarter_restart => true,
         :is_remote => false,
         :temp_dir => "/boxstarter/tmp",
         :disable_reboots => true})
