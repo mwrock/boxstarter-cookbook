@@ -62,4 +62,17 @@ describe 'boxstarter provider' do
   it "executes the wrapper" do
     expect(chef_run).to run_execute('/boxstarter/tmp/boxstarter.bat')
   end
+
+  context 'when running on non windows platform' do
+    let(:chef_run) do
+      ChefSpec::Runner.new(
+        cookbook_path: ["#{File.dirname(__FILE__)}/../..","#{File.dirname(__FILE__)}/cookbooks"]) do | node |
+        node.automatic['platform_family'] = 'not_windows'
+      end.converge('boxstarter_test::default')
+    end
+
+    it 'raises an error' do
+      expect {chef_run}.to raise_error
+    end
+  end
 end
