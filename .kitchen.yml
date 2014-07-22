@@ -19,5 +19,5 @@ platforms:
 suites:
   - name: default
     run_list:
-      - recipe[boxstarter::default]
+      - recipe[boxstarter_test::simple]
     attributes:
