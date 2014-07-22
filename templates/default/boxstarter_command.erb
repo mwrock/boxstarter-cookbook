@@ -24,4 +24,13 @@ if($isRemote -and $creds){
 
 $result = Install-BoxstarterPackage @params -verbose
 
-if($result.errors.count -gt 0){ throw $result.errors }
+if($result.errors.count -gt 0) {
+  Write-Output "ERROR SUMMARY:"
+  $i=0
+  $result.errors | % {
+    $i=$i + 1
+    Write-Output "#$($i))"
+    $_ | fl * -force
+  }
+  $host.SetShouldExit($result.errors.count)
+}

@@ -1,26 +1,26 @@
+function Test-ChildOfRuby($ID = $PID) {
+   $parent = (Get-WmiObject -Class Win32_Process -Filter "ProcessID=$ID").ParentProcessID 
+    if($parent -eq $null) { return $false } else {
+      $parentProc = Get-WmiObject -Class Win32_Process -Filter "ProcessID=$parent"
+      if($parentProc.Name -eq "ruby.exe") {return $true} 
+      elseif($parentProc.Name -eq "services.exe") {
+            return $false
+      }
+      else {
+        return Test-ChildOfRuby $parent
+      }
+    }
+}
+
 try {
+  $error.Clear()
   $start_chef_client_onreboot = $<%= @start_chef_client_onreboot %>
   <%= @code %>
+
+  if(Test-PendingReboot) {Invoke-Reboot}
+  if($start_chef_client_onreboot -and !(Test-ChildOfRuby)){Chef-Client}
 
    Write-ChocolateySuccess 'Boxstarter-Cookbook-Block'
 } catch {
   Write-ChocolateyFailure 'Boxstarter-Cookbook-Block' $_.ToString()
-  throw
 }
-
-if(Test-PendingReboot) {Invoke-Reboot}
-if($start_chef_client_onreboot -and !(Test-ChildOfRuby)){Chef-Client}
-
-function Test-ChildOfRuby($ID = $PID) {
-   $parent = (Get-WmiObject -Class Win32_Process -Filter "ProcessID=$ID").ParentProcessID 
-    if($parent -eq $null) { return $false } else {
-    	$parentProc = Get-WmiObject -Class Win32_Process -Filter "ProcessID=$parent"
-    	if($parentProc.Name -eq "ruby.exe") {return $true} 
-    	elseif($parentProc.Name -eq "services.exe") {
-            return $false
-    	}
-    	else {
-    		return Test-ChildOfRuby $parent
-    	}
-    }
-} 
