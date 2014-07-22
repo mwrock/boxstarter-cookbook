@@ -94,4 +94,34 @@ describe 'boxstarter provider' do
       expect(chef_run).not_to run_execute('/boxstarter/tmp/boxstarter.bat')
     end
   end
+
+  context 'when running remotely' do
+    let(:chef_run) do
+      ChefSpec::Runner.new(
+        cookbook_path: ["#{File.dirname(__FILE__)}/../..","#{File.dirname(__FILE__)}/cookbooks"],
+        step_into: ['boxstarter']
+        ) do | node |
+        node.set['boxstarter']['tmp_dir'] = '/boxstarter/tmp'
+        node.automatic['platform_family'] = 'windows'
+      end.converge('boxstarter_test::default')
+    end
+    before do
+      require 'win32ole'
+      allow(WIN32OLE).to receive(:connect).with("winmgmts://").and_return(
+        Boxstarter::SpecHelper::MockWMI.new([Boxstarter::SpecHelper::MockProcess.new('winrshost1.exe',nil)]),
+        Boxstarter::SpecHelper::MockWMI.new([Boxstarter::SpecHelper::MockProcess.new('winrshost.exe',nil)]))
+    end
+
+    it "passes remoting status to command file" do
+      expect(chef_run).to create_template('/boxstarter/tmp/boxstarter.ps1').with(
+        source: "boxstarter_command.erb",
+        cookbook: "boxstarter",
+        variables: {
+          :password => nil,
+          :disable_boxstarter_restart => false,
+          :is_remote => true,
+          :temp_dir => "/boxstarter/tmp",
+          :disable_reboots => false})
+    end
+  end
 end

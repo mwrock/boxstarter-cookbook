@@ -1,6 +1,11 @@
 module Boxstarter
   module Helper
     def check_process_tree(parent, attr, match)
+      wmi = ::WIN32OLE.connect("winmgmts://") 
+      check_process_tree_internal(wmi, parent, attr, match)   
+    end
+
+    def check_process_tree_internal(wmi, parent, attr, match)
       Chef::Log.debug "***Looking for parents running as #{match} at pid #{parent}***"
 
       if parent.nil?
@@ -8,7 +13,6 @@ module Boxstarter
         return false 
       end
 
-      wmi = WIN32OLE.connect("winmgmts://")
       parent_proc = wmi.ExecQuery("Select * from Win32_Process where ProcessID=#{parent}")
       
       if parent_proc.each.count == 0
@@ -30,7 +34,7 @@ module Boxstarter
       end
 
       Chef::Log.debug "***Proc was running #{proc.Name}...trying its parent***"
-      return check_process_tree(proc.ParentProcessID, attr, match)
+      return check_process_tree_internal(wmi, proc.ParentProcessID, attr, match)
     end
   end
 end
