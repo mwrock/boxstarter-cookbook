@@ -55,6 +55,16 @@ action :run do
     timeout 7200
   end
 
+  file script_path do
+    action :delete
+  end
+  file command_path do
+    action :delete
+  end
+  file batch_path do
+    action :delete
+  end
+
   # cmd = Mixlib::ShellOut.new(batch_path)
   # Chef::Log.debug(cmd)
   # cmd.live_stream = cmd.stdout
