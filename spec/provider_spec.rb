@@ -60,7 +60,7 @@ describe 'boxstarter provider' do
       variables: {:command => "-file /boxstarter/tmp/boxstarter.ps1"})
   end
   it "executes the wrapper" do
-    expect(chef_run).to run_execute('/boxstarter/tmp/boxstarter.bat')
+    expect(chef_run).to run_ruby_block('Run Boxstarter Package')
   end
   it "cleans up command file" do
     expect(chef_run).to delete_file('/boxstarter/tmp/boxstarter.ps1')
