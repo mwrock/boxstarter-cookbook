@@ -14,11 +14,11 @@ function Test-ChildOfRuby($ID = $PID) {
 
 try {
   $error.Clear()
-  $start_chef_client_onreboot = $<%= @start_chef_client_onreboot %>
+  $chef_client_enabled = $<%= @chef_client_enabled %>
   <%= @code %>
 
   if(Test-PendingReboot) {Invoke-Reboot}
-  if($start_chef_client_onreboot -and !(Test-ChildOfRuby)){Chef-Client}
+  if(!$chef_client_enabled -and !(Test-ChildOfRuby)){Chef-Client}
 
    Write-ChocolateySuccess 'Boxstarter-Cookbook-Block'
 } catch {

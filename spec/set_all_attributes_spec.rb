@@ -19,21 +19,13 @@ describe 'boxstarter_test::set_all_attributes' do
       Boxstarter::SpecHelper::MockWMI.new([]))
   end
 
-  it "writes code to package file" do
-    expect(chef_run).to create_template('/boxstarter/tmp/package.ps1').with(
-      source: "package.erb",
-      cookbook: "boxstarter",
-      variables: {
-        :code => "    Install-WindowsUpdate -acceptEula\n",
-        :start_chef_client_onreboot => false})
-  end
   it "writes command file with the correct parameters" do
     expect(chef_run).to create_template('/boxstarter/tmp/boxstarter.ps1').with(
       source: "boxstarter_command.erb",
       cookbook: "boxstarter",
       variables: {
         :password => "mypassword",
-        :disable_boxstarter_restart => true,
+        :chef_client_enabled => false,
         :is_remote => false,
         :temp_dir => "/boxstarter/tmp",
         :disable_reboots => true})

@@ -3,7 +3,7 @@ Import-Module "$($module_dir.FullName)\Boxstarter.Chocolatey.psd1"
 $identity = [System.Security.Principal.WindowsIdentity]::GetCurrent()
 $plain_password = '<%= @password %>'
 $disable_reboots = $<%= @disable_reboots %>
-$disable_boxstarter_restart = $<%= @disable_boxstarter_restart %>
+$chef_client_enabled = $<%= @chef_client_enabled %>
 $isRemote = $<%= @is_remote %>
 
 if($plain_password.length -gt 0) {
@@ -14,9 +14,17 @@ if($plain_password.length -gt 0) {
 $params = @{
 	PackageName = "<%= @temp_dir %>/package.ps1"
 }
-if($creds -and !($disable_boxstarter_restart)){$params['credential'] = $creds}
+
+#if we use the chef_client cookbook and dont want to start 
+#boxstarter on its own after reboot, then do not send 
+#credentials to the boxstarter installer command
+if($creds -and !($chef_client_enabled)){$params['credential'] = $creds}
+
 if($disable_reboots){$params['DisableReboots'] = $true}
 
+#If we are running via winrm perhaps via test-kitchen or chef-metal
+#we will need to create a scheduled task for operations that do
+#not work remotely
 if($isRemote -and $creds){
 	Import-Module "$($module_dir.FullName)\..\Boxstarter.Common\Boxstarter.Common.psd1"
 	Create-BoxstarterTask $creds

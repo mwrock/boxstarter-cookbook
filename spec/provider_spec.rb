@@ -40,7 +40,7 @@ describe 'boxstarter provider' do
       cookbook: "boxstarter",
       variables: {
         :code => "Install-WindowsUpdate -acceptEula",
-        :start_chef_client_onreboot => true})
+        :chef_client_enabled => false})
   end
   it "writes command file with the correct parameters" do
     expect(chef_run).to create_template('/boxstarter/tmp/boxstarter.ps1').with(
@@ -48,7 +48,7 @@ describe 'boxstarter provider' do
       cookbook: "boxstarter",
       variables: {
         :password => nil,
-        :disable_boxstarter_restart => false,
+        :chef_client_enabled => false,
         :is_remote => false,
         :temp_dir => "/boxstarter/tmp",
         :disable_reboots => false})
@@ -118,10 +118,43 @@ describe 'boxstarter provider' do
         cookbook: "boxstarter",
         variables: {
           :password => nil,
-          :disable_boxstarter_restart => false,
+          :chef_client_enabled => false,
           :is_remote => true,
           :temp_dir => "/boxstarter/tmp",
           :disable_reboots => false})
     end
   end
+
+  context 'when the chef_client cookbook is used' do
+    let(:chef_run) do
+      ChefSpec::Runner.new(
+        cookbook_path: ["#{File.dirname(__FILE__)}/../..","#{File.dirname(__FILE__)}/cookbooks"],
+        step_into: ['boxstarter']
+        ) do | node |
+        node.set['boxstarter']['tmp_dir'] = '/boxstarter/tmp'
+        node.set['chef_client']['init_style'] = 'service'
+        node.automatic['platform_family'] = 'windows'
+      end.converge('boxstarter_test::default')
+    end
+
+    it "informs command file chef_client is used" do
+      expect(chef_run).to create_template('/boxstarter/tmp/boxstarter.ps1').with(
+        source: "boxstarter_command.erb",
+        cookbook: "boxstarter",
+        variables: {
+          :password => nil,
+          :chef_client_enabled => true,
+          :is_remote => false,
+          :temp_dir => "/boxstarter/tmp",
+          :disable_reboots => false})
+    end
+    it "informs package template chef client is used" do
+      expect(chef_run).to create_template('/boxstarter/tmp/package.ps1').with(
+        source: "package.erb",
+        cookbook: "boxstarter",
+        variables: {
+          :code => "Install-WindowsUpdate -acceptEula",
+          :chef_client_enabled => true})
+    end
+  end  
 end

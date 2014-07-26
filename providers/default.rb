@@ -12,8 +12,12 @@ action :run do
   code = @new_resource.code || @new_resource.script
   password = @new_resource.password
   disable_reboots = @new_resource.disable_reboots
-  disable_boxstarter_restart = @new_resource.disable_boxstarter_restart
-  start_chef_client_onreboot = @new_resource.start_chef_client_onreboot
+
+  chef_client_enabled = false
+  if node.has_key?('chef_client') && node['chef_client']['init_style'] != 'none'
+    chef_client_enabled = true
+  end
+
   script_path = "#{node['boxstarter']['tmp_dir']}/package.ps1"
 
   template script_path do
@@ -21,7 +25,7 @@ action :run do
     cookbook "boxstarter"
     variables({
       :code => code,
-      :start_chef_client_onreboot => start_chef_client_onreboot
+      :chef_client_enabled => chef_client_enabled
     })
   end
 
@@ -31,7 +35,7 @@ action :run do
     cookbook "boxstarter"
     variables({
       :password => password,
-      :disable_boxstarter_restart => disable_boxstarter_restart,
+      :chef_client_enabled => chef_client_enabled,
       :is_remote => check_process_tree(Process.ppid, :Name, 'winrshost.exe'),
       :temp_dir => node['boxstarter']['tmp_dir'],
       :disable_reboots => disable_reboots
