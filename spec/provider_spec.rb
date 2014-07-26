@@ -62,9 +62,6 @@ describe 'boxstarter provider' do
   it "executes the wrapper" do
     expect(chef_run).to run_execute('/boxstarter/tmp/boxstarter.bat')
   end
-  it "cleans up script file" do
-    expect(chef_run).to delete_file('/boxstarter/tmp/package.ps1')
-  end
   it "cleans up command file" do
     expect(chef_run).to delete_file('/boxstarter/tmp/boxstarter.ps1')
   end

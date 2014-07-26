@@ -55,9 +55,6 @@ action :run do
     timeout 7200
   end
 
-  file script_path do
-    action :delete
-  end
   file command_path do
     action :delete
   end
