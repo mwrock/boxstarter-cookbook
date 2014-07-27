@@ -1,6 +1,7 @@
 include_recipe 'boxstarter::default'
 
 boxstarter "boxstarter run" do
+  password 'Pass@word1'
   code <<-EOH
     Enable-RemoteDesktop
     cinst console2
