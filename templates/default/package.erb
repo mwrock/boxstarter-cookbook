@@ -18,7 +18,7 @@ try {
   <%= @code %>
 
   if(Test-PendingReboot) {Invoke-Reboot}
-  if(!$chef_client_enabled -and !(Test-ChildOfRuby)){Chef-Client}
+  if(!$chef_client_enabled -and !(Test-ChildOfRuby)){<%= @chef_client_command %>}
 
    Write-ChocolateySuccess 'Boxstarter-Cookbook-Block'
 } catch {

@@ -40,7 +40,8 @@ describe 'boxstarter provider' do
       cookbook: "boxstarter",
       variables: {
         :code => "Install-WindowsUpdate -acceptEula",
-        :chef_client_enabled => false})
+        :chef_client_enabled => false,
+        :chef_client_command => "#{$0}.bat #{ARGV.join(' ')}"})
   end
   it "writes command file with the correct parameters" do
     expect(chef_run).to create_template('/boxstarter/tmp/boxstarter.ps1').with(
@@ -160,7 +161,8 @@ describe 'boxstarter provider' do
         cookbook: "boxstarter",
         variables: {
           :code => "Install-WindowsUpdate -acceptEula",
-          :chef_client_enabled => true})
+        :chef_client_enabled => true,
+        :chef_client_command => "#{$0}.bat #{ARGV.join(' ')}"})
     end
   end  
 end
