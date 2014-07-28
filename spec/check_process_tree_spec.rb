@@ -20,7 +20,7 @@ describe 'check_process_tree' do
 		let(:checker) { check_process_tree(50, :CommandLine, 'cl2') }
 
 		it "will return true" do
-			expect(checker).to be(true)
+			expect(checker).not_to be(nil)
 		end
 	end
 
@@ -28,7 +28,7 @@ describe 'check_process_tree' do
 		let(:checker) { check_process_tree(nil, :CommandLine, 'cl2') }
 
 		it "will return false" do
-			expect(checker).to be(false)
+			expect(checker).to be(nil)
 		end
 	end
 
@@ -36,7 +36,7 @@ describe 'check_process_tree' do
 		let(:checker) { check_process_tree(50, :CommandLine, 'targetooney') }
 
 		it "will return false" do
-			expect(checker).to be(false)
+			expect(checker).to be(nil)
 		end
 	end
 
@@ -44,7 +44,7 @@ describe 'check_process_tree' do
 		let(:checker) { check_process_tree(50, :CommandLine, 'target') }
 
 		it "will return false because it is skipped" do
-			expect(checker).to be(false)
+			expect(checker).to be(nil)
 		end
 	end
 end

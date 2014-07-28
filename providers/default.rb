@@ -7,7 +7,7 @@ end
 action :run do
   require 'win32ole'
 
-  return if check_process_tree(Process.ppid, :CommandLine, 'boxstarter')
+  return if !check_process_tree(Process.ppid, :CommandLine, 'boxstarter').nil?
 
   code = @new_resource.code || @new_resource.script
   password = @new_resource.password
@@ -36,7 +36,7 @@ action :run do
     variables({
       :password => password,
       :chef_client_enabled => chef_client_enabled,
-      :is_remote => check_process_tree(Process.ppid, :Name, 'winrshost.exe'),
+      :is_remote => !check_process_tree(Process.ppid, :Name, 'winrshost.exe').nil?,
       :temp_dir => node['boxstarter']['tmp_dir'],
       :disable_reboots => disable_reboots
     })

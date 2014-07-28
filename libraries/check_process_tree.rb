@@ -10,14 +10,14 @@ module Boxstarter
 
       if parent.nil?
         Chef::Log.debug "***No more parents. Finished looking for #{match} parents***"
-        return false 
+        return nil 
       end
 
       parent_proc = wmi.ExecQuery("Select * from Win32_Process where ProcessID=#{parent}")
       
       if parent_proc.each.count == 0
         Chef::Log.debug "***No process for pid #{parent}. Finished looking for #{match} parents***"
-        return false
+        return nil
       end
 
       proc = parent_proc.each.next
@@ -25,12 +25,12 @@ module Boxstarter
       result = proc.send(attr)
       if !result.nil? && result.downcase.include?(match)
         Chef::Log.debug "***Found #{match} parent pid #{parent}...returning true***"
-        return true 
+        return proc 
       end
 
       if proc.Name == 'services.exe'
         Chef::Log.debug "***Proc was running #{proc.Name}...quitting since this is the effective trunk***"
-        return false
+        return nil
       end
 
       Chef::Log.debug "***Proc was running #{proc.Name}...trying its parent***"
