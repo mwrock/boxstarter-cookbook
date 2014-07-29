@@ -1,3 +1,5 @@
 @echo off
 
-%systemroot%\sysnative\windowspowershell\v1.0\powershell.exe -NoProfile -ExecutionPolicy bypass <%= @command %>
+SET ps=%systemroot%\sysnative\windowspowershell\v1.0\powershell.exe
+if NOT EXIST %ps% SET ps=%systemroot%\system32\windowspowershell\v1.0\powershell.exe
+%ps% -NoProfile -ExecutionPolicy bypass <%= @command %>

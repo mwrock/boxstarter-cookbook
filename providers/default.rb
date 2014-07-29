@@ -1,3 +1,5 @@
+require 'base64'
+
 use_inline_resources
 
 def whyrun_supported?
@@ -11,6 +13,7 @@ action :run do
     code = @new_resource.code || @new_resource.script
     password = @new_resource.password
     disable_reboots = @new_resource.disable_reboots
+    is_remote = !check_process_tree(Process.ppid, :Name, 'winrshost.exe').nil?
 
     chef_client_enabled = false
     if node.has_key?('chef_client') && node['chef_client']['init_style'] != 'none'
@@ -19,6 +22,7 @@ action :run do
 
     chef_client_command = "#{$0}.bat #{ARGV.join(' ')}"
     script_path = "#{node['boxstarter']['tmp_dir']}/package.ps1"
+    boxstarter_command = command(password, chef_client_enabled, is_remote, node['boxstarter']['tmp_dir'], disable_reboots)
 
     template script_path do
     	source "package.erb"
@@ -30,25 +34,12 @@ action :run do
       })
     end
 
-    command_path = "#{node['boxstarter']['tmp_dir']}/boxstarter.ps1"
-    template command_path do
-      source "boxstarter_command.erb"
-      cookbook "boxstarter"
-      variables({
-        :password => password,
-        :chef_client_enabled => chef_client_enabled,
-        :is_remote => !check_process_tree(Process.ppid, :Name, 'winrshost.exe').nil?,
-        :temp_dir => node['boxstarter']['tmp_dir'],
-        :disable_reboots => disable_reboots
-      })
-    end
-
     batch_path = "#{node['boxstarter']['tmp_dir']}/boxstarter.bat"
     template batch_path do
       source "ps_wrapper.erb"
       cookbook "boxstarter"
       variables({
-        :command => "-file #{command_path}"
+        :command => "-EncodedCommand #{boxstarter_command}"
       })
     end
 
@@ -62,9 +53,6 @@ action :run do
       end
     end
 
-    file command_path do
-      action :delete
-    end
     file batch_path do
       action :delete
     end

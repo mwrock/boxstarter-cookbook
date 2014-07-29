@@ -1,6 +1,9 @@
 require 'spec_helper'
 require 'chefspec'
 require_relative '../libraries/check_process_tree'
+require_relative '../libraries/command'
+
+include Boxstarter::Helper
 
 describe 'boxstarter_test::set_all_attributes' do
   
@@ -19,15 +22,10 @@ describe 'boxstarter_test::set_all_attributes' do
       Boxstarter::SpecHelper::MockWMI.new([]))
   end
 
-  it "writes command file with the correct parameters" do
-    expect(chef_run).to create_template('/boxstarter/tmp/boxstarter.ps1').with(
-      source: "boxstarter_command.erb",
+  it "writes the wrapper file" do
+    expect(chef_run).to create_template('/boxstarter/tmp/boxstarter.bat').with(
+      source: "ps_wrapper.erb",
       cookbook: "boxstarter",
-      variables: {
-        :password => "mypassword",
-        :chef_client_enabled => false,
-        :is_remote => false,
-        :temp_dir => "/boxstarter/tmp",
-        :disable_reboots => true})
-  end    
+      variables: {:command => "-EncodedCommand #{command("mypassword", false, false, "/boxstarter/tmp", true)}"})
+  end
 end

@@ -1,6 +1,9 @@
 require 'spec_helper'
 require 'chefspec'
 require_relative '../libraries/check_process_tree'
+require_relative '../libraries/command'
+
+include Boxstarter::Helper
 
 describe 'boxstarter provider' do
   
@@ -43,28 +46,14 @@ describe 'boxstarter provider' do
         :chef_client_enabled => false,
         :chef_client_command => "#{$0}.bat #{ARGV.join(' ')}"})
   end
-  it "writes command file with the correct parameters" do
-    expect(chef_run).to create_template('/boxstarter/tmp/boxstarter.ps1').with(
-      source: "boxstarter_command.erb",
-      cookbook: "boxstarter",
-      variables: {
-        :password => nil,
-        :chef_client_enabled => false,
-        :is_remote => false,
-        :temp_dir => "/boxstarter/tmp",
-        :disable_reboots => false})
-  end  
   it "writes the wrapper file" do
     expect(chef_run).to create_template('/boxstarter/tmp/boxstarter.bat').with(
       source: "ps_wrapper.erb",
       cookbook: "boxstarter",
-      variables: {:command => "-file /boxstarter/tmp/boxstarter.ps1"})
+      variables: {:command => "-EmbeddedCommand #{Base64.encode64(command(nil, false, false, "/boxstarter/tmp", false))}"})
   end
   it "executes the wrapper" do
     expect(chef_run).to run_ruby_block('Run Boxstarter Package')
-  end
-  it "cleans up command file" do
-    expect(chef_run).to delete_file('/boxstarter/tmp/boxstarter.ps1')
   end
   it "cleans up batch file" do
     expect(chef_run).to delete_file('/boxstarter/tmp/boxstarter.bat')
@@ -118,17 +107,11 @@ describe 'boxstarter provider' do
         Boxstarter::SpecHelper::MockWMI.new([Boxstarter::SpecHelper::MockProcess.new('winrshost1.exe',nil)]),
         Boxstarter::SpecHelper::MockWMI.new([Boxstarter::SpecHelper::MockProcess.new('winrshost.exe',nil)]))
     end
-
-    it "passes remoting status to command file" do
-      expect(chef_run).to create_template('/boxstarter/tmp/boxstarter.ps1').with(
-        source: "boxstarter_command.erb",
+    it "writes the wrapper file" do
+      expect(chef_run).to create_template('/boxstarter/tmp/boxstarter.bat').with(
+        source: "ps_wrapper.erb",
         cookbook: "boxstarter",
-        variables: {
-          :password => nil,
-          :chef_client_enabled => false,
-          :is_remote => true,
-          :temp_dir => "/boxstarter/tmp",
-          :disable_reboots => false})
+        variables: {:command => "-EmbeddedCommand #{Base64.encode64(command(nil, false, true, "/boxstarter/tmp", false))}"})
     end
   end
 
@@ -144,16 +127,11 @@ describe 'boxstarter provider' do
       end.converge('boxstarter_test::default')
     end
 
-    it "informs command file chef_client is used" do
-      expect(chef_run).to create_template('/boxstarter/tmp/boxstarter.ps1').with(
-        source: "boxstarter_command.erb",
+    it "writes the wrapper file" do
+      expect(chef_run).to create_template('/boxstarter/tmp/boxstarter.bat').with(
+        source: "ps_wrapper.erb",
         cookbook: "boxstarter",
-        variables: {
-          :password => nil,
-          :chef_client_enabled => true,
-          :is_remote => false,
-          :temp_dir => "/boxstarter/tmp",
-          :disable_reboots => false})
+        variables: {:command => "-EmbeddedCommand #{Base64.encode64(command(nil, true, false, "/boxstarter/tmp", false))}"})
     end
     it "informs package template chef client is used" do
       expect(chef_run).to create_template('/boxstarter/tmp/package.ps1').with(
