@@ -50,7 +50,7 @@ describe 'boxstarter provider' do
     expect(chef_run).to create_template('/boxstarter/tmp/boxstarter.bat').with(
       source: "ps_wrapper.erb",
       cookbook: "boxstarter",
-      variables: {:command => "-EmbeddedCommand #{Base64.encode64(command(nil, false, false, "/boxstarter/tmp", false))}"})
+      variables: {:command => "-EncodedCommand #{command(nil, false, false, "/boxstarter/tmp", false)}"})
   end
   it "executes the wrapper" do
     expect(chef_run).to run_ruby_block('Run Boxstarter Package')
@@ -111,7 +111,7 @@ describe 'boxstarter provider' do
       expect(chef_run).to create_template('/boxstarter/tmp/boxstarter.bat').with(
         source: "ps_wrapper.erb",
         cookbook: "boxstarter",
-        variables: {:command => "-EmbeddedCommand #{Base64.encode64(command(nil, false, true, "/boxstarter/tmp", false))}"})
+        variables: {:command => "-EncodedCommand #{command(nil, false, true, "/boxstarter/tmp", false)}"})
     end
   end
 
@@ -131,7 +131,7 @@ describe 'boxstarter provider' do
       expect(chef_run).to create_template('/boxstarter/tmp/boxstarter.bat').with(
         source: "ps_wrapper.erb",
         cookbook: "boxstarter",
-        variables: {:command => "-EmbeddedCommand #{Base64.encode64(command(nil, true, false, "/boxstarter/tmp", false))}"})
+        variables: {:command => "-EncodedCommand #{command(nil, true, false, "/boxstarter/tmp", false)}"})
     end
     it "informs package template chef client is used" do
       expect(chef_run).to create_template('/boxstarter/tmp/package.ps1').with(
