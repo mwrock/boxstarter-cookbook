@@ -23,7 +23,7 @@ module Boxstarter
       #boxstarter on its own after reboot, then do not send 
       #credentials to the boxstarter installer command
       if($creds -and !($chef_client_enabled)){$params['credential'] = $creds}
-
+      if($chef_client_enabled){$params['DisableRestart'] = $true}
       if($disable_reboots){$params['DisableReboots'] = $true}
 
       #If we are running via winrm perhaps via test-kitchen or chef-metal
