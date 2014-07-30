@@ -4,10 +4,10 @@ Run [Boxstarter](http://boxstarter.org) scripts inside Chef!
 
 This cookbook provides a light weight resource allowing you to embed Boxstarter scripts inside your Chef recipes. Boxstarter adds value to your Windows installs by:
 
-- Providing an unattended install experience for installs that may require one or many reboots.
+- Providing an unattended install experience for installs that may require one or many reboots
 - Adds the ability to easily install any [chocolatey](http://chocolatey.org/) package
-- Adds several windows specific configuration commands such as tweaking the task bar, customizing explorer options and much more. See [here](http://boxstarter.org/WinConfig) for details.
-- Supplies an Install-WindowsUpdates command that can install all available critical updates locally or remotely and reboot as many times as necessary.
+- Adds several windows specific configuration commands such as tweaking the task bar, customizing explorer options and much more. See [here](http://boxstarter.org/WinConfig) for details
+- Supplies an Install-WindowsUpdates command that can install all available critical updates locally or remotely and reboot as many times as necessary
 
 Requirements
 ------------
@@ -76,9 +76,6 @@ Visit http://boxstarter.org for complete documentation, as well as links to sour
 
 Contributing
 ------------
-TODO: (optional) If this is a public cookbook, detail the process for contributing. If this is a private cookbook, remove this section.
-
-e.g.
 1. Fork the repository on Github
 2. Create a named feature branch (like `add_component_x`)
 3. Write your change
@@ -89,4 +86,4 @@ e.g.
 License and Authors
 -------------------
 Author: Matt Wrock (matt@mattwrock.com @mwrockx)
-Licensed under Apache 2
+Licensed under [Apache 2](https://github.com/mwrock/boxstarter-cookbook/blob/master/LICENSE.txt)
