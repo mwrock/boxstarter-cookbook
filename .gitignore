@@ -2,3 +2,4 @@
 .kitchen/
 .kitchen.local.yml
 .kitchen/logs
+metadata.json
