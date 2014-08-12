@@ -6,6 +6,6 @@ DEPENDENCIES
     path: test/cookbooks/boxstarter_test
 
 GRAPH
-  boxstarter (0.1.4)
+  boxstarter (1.0.0)
   boxstarter_test (0.1.0)
     boxstarter (>= 0.0.0)
