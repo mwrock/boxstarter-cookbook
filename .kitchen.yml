@@ -7,14 +7,18 @@ provisioner:
 
 platforms:
   - name: windows-2012R2
+    transport:
+      name: winrm
+      max_threads: 1
     driver:
-      username: administrator
-      password: Pass@word1
       guest: :windows
       box: mwrock/Windows2012R2
       vagrantfile_erb: VagrantfileWinrm.erb
       provider: hyperv
       box_url: https://vagrantcloud.com/mwrock/Windows2012R2/version/1/provider/hyperv.box
+      port: 5985
+      username: administrator
+      password: Pass@word1
 
 suites:
   - name: default
