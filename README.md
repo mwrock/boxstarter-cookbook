@@ -17,7 +17,9 @@ Attributes
 ----------
 ````
 default['boxstarter']['tmp_dir'] = "#{ENV['TEMP']}/boxstarter"
+default['boxstarter']['version'] = "2.4.152"
 ````
+No version is specified by default, installing the latest boxstarter modules.
 
 Usage
 -----
