@@ -1,4 +1,3 @@
-raise 'platform not supported' if node['platform_family'] != 'windows'
 Chef::Provider::Boxstarter.send(:include, Boxstarter::Helper)
 
 version = nil
