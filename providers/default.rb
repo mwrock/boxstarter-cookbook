@@ -50,6 +50,8 @@ action :run do
         cmd.live_stream = STDOUT
         cmd.timeout = 7200
         cmd.run_command
+        Chef::Log.info(cmd.stdout)
+        Chef::Log.info(cmd.stderr)
         cmd.error!
       end
     end
