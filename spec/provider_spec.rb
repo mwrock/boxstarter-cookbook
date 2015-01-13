@@ -8,13 +8,13 @@ include Boxstarter::Helper
 describe 'boxstarter provider' do
   
   let(:chef_run) do
-  	ChefSpec::Runner.new(
+  	ChefSpec::SoloRunner.new(
   		cookbook_path: ["#{File.dirname(__FILE__)}/../..","#{File.dirname(__FILE__)}/cookbooks"], 
   		step_into: ['boxstarter']
   		) do | node |
       node.set['boxstarter']['tmp_dir'] = '/boxstarter/tmp'
       node.automatic['platform_family'] = 'windows'
-  	end.converge('boxstarter_test::default')
+  	end.converge('boxstarter_spec::default')
   end
   before do
     require 'win32ole'
@@ -61,7 +61,7 @@ describe 'boxstarter provider' do
 
   context 'when specifying a version' do
     let(:chef_run) do
-      ChefSpec::Runner.new(
+      ChefSpec::SoloRunner.new(
         cookbook_path: ["#{File.dirname(__FILE__)}/../..","#{File.dirname(__FILE__)}/cookbooks"]) do | node |
         node.set['boxstarter']['tmp_dir'] = '/boxstarter/tmp'
         node.set['boxstarter']['version'] = '9.9.9'
@@ -79,7 +79,7 @@ describe 'boxstarter provider' do
 
   context 'when running on non windows platform' do
     let(:chef_run) do
-      ChefSpec::Runner.new(
+      ChefSpec::SoloRunner.new(
         cookbook_path: ["#{File.dirname(__FILE__)}/../..","#{File.dirname(__FILE__)}/cookbooks"]) do | node |
         node.automatic['platform_family'] = 'not_windows'
       end.converge('boxstarter_test::default')
@@ -92,7 +92,7 @@ describe 'boxstarter provider' do
 
   context 'when spawned from another boxstarter run' do
     let(:chef_run) do
-      ChefSpec::Runner.new(
+      ChefSpec::SoloRunner.new(
         cookbook_path: ["#{File.dirname(__FILE__)}/../..","#{File.dirname(__FILE__)}/cookbooks"]) do | node |
         node.set['boxstarter']['tmp_dir'] = '/boxstarter/tmp'
         node.automatic['platform_family'] = 'windows'
@@ -111,7 +111,7 @@ describe 'boxstarter provider' do
 
   context 'when running remotely' do
     let(:chef_run) do
-      ChefSpec::Runner.new(
+      ChefSpec::SoloRunner.new(
         cookbook_path: ["#{File.dirname(__FILE__)}/../..","#{File.dirname(__FILE__)}/cookbooks"],
         step_into: ['boxstarter']
         ) do | node |
@@ -135,7 +135,7 @@ describe 'boxstarter provider' do
 
   context 'when the chef_client cookbook is used' do
     let(:chef_run) do
-      ChefSpec::Runner.new(
+      ChefSpec::SoloRunner.new(
         cookbook_path: ["#{File.dirname(__FILE__)}/../..","#{File.dirname(__FILE__)}/cookbooks"],
         step_into: ['boxstarter']
         ) do | node |

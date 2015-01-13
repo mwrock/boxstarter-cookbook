@@ -5,10 +5,10 @@ require_relative '../libraries/command'
 
 include Boxstarter::Helper
 
-describe 'boxstarter_test::set_all_attributes' do
+describe 'boxstarter_spec::set_all_attributes' do
   
   let(:chef_run) do
-  	ChefSpec::Runner.new(
+  	ChefSpec::SoloRunner.new(
   		cookbook_path: ["#{File.dirname(__FILE__)}/../..","#{File.dirname(__FILE__)}/cookbooks"], 
   		step_into: ['boxstarter']
   		) do | node |
