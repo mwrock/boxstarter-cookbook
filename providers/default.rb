@@ -1,5 +1,7 @@
 require 'base64'
 
+include Boxstarter::Helper
+
 use_inline_resources
 
 def whyrun_supported?
