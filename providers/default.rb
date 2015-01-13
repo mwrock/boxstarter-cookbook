@@ -50,6 +50,7 @@ action :run do
         cmd.live_stream = STDOUT
         cmd.timeout = 7200
         cmd.run_command
+        cmd.error!
       end
     end
 
