@@ -59,6 +59,24 @@ describe 'boxstarter provider' do
     expect(chef_run).to delete_file('/boxstarter/tmp/boxstarter.bat')
   end
 
+  context 'when specifying a version' do
+    let(:chef_run) do
+      ChefSpec::Runner.new(
+        cookbook_path: ["#{File.dirname(__FILE__)}/../..","#{File.dirname(__FILE__)}/cookbooks"]) do | node |
+        node.set['boxstarter']['tmp_dir'] = '/boxstarter/tmp'
+        node.set['boxstarter']['version'] = '9.9.9'
+        node.automatic['platform_family'] = 'windows'
+      end.converge('boxstarter_test::default')
+    end
+
+    it "writes installer wrapper with the version in the node" do
+      expect(chef_run).to create_template('/boxstarter/tmp/setup.bat').with(
+        source: "ps_wrapper.erb",
+        variables: {
+          :command => "-command \". '%~dp0bootstrapper.ps1';Get-Boxstarter -version '9.9.9' -force\""})
+    end
+  end
+
   context 'when running on non windows platform' do
     let(:chef_run) do
       ChefSpec::Runner.new(

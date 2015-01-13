@@ -1,11 +1,16 @@
 function Get-Boxstarter {
     Param(
+        [string] $version = $null,
         [switch] $Force
     )
     Write-Output "Welcome to the Boxstarter Module installer!"
     if(Check-Chocolatey -Force:$Force){
         Write-Output "Chocolatey installed, Installing Boxstarter Modules."
-        cinst Boxstarter -version 2.4.67
+        $versionArg = @{}
+        if($version) {
+            $versionArg.Version = $version
+        }
+        cinst Boxstarter @versionArg
         $Message = "Boxstarter Module Installer completed"
     }
     else {
