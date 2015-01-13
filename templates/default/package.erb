@@ -18,6 +18,10 @@ try {
   <%= @code %>
 
   if(Test-PendingReboot) {Invoke-Reboot}
+
+  # start chef if boxstarter is running completely outside of
+  # chef. This would happen if boxstarter was started upon restart
+  # after a reboot.
   if(!$chef_client_enabled -and !(Test-ChildOfRuby)){<%= @chef_client_command %>}
 
    Write-ChocolateySuccess 'Boxstarter-Cookbook-Block'
