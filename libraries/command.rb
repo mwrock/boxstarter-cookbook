@@ -32,6 +32,7 @@ module Boxstarter
         Create-BoxstarterTask $creds
       }
 
+      Import-Module "$env:appdata/boxstarter/Boxstarter.Chocolatey/Boxstarter.Chocolatey.psd1"
       $result = Install-BoxstarterPackage @params -verbose
 
       if($result.errors.count -gt 0) {
