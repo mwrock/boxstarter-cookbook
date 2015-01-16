@@ -1,9 +1,41 @@
 module Boxstarter
   module Helper
-    def command(password, chef_client_enabled, is_remote, temp_dir, disable_reboots)
+    def command(password, chef_client_enabled, is_remote, temp_dir, disable_reboots, version = nil)
       command = <<-EOS
-      $module_dir = Get-ChildItem -Path "$env:SystemDrive/Users/*/Appdata/Roaming/Boxstarter" -filter Boxstarter.Chocolatey -Recurse -Directory
-      Import-Module "$($module_dir.FullName)/Boxstarter.Chocolatey.psd1"
+      function Test-Module($module, $version = $null) {
+        if(!$module) { return $null }
+        
+        if(!$version) {
+          $module | Import-Module -Force
+          return $module
+        }
+
+        if($module.version -eq $version) { return $module }
+      }
+
+      $modName = "Boxstarter.Chocolatey"
+      $modPath = "$modName/$modName.psd1"
+      $mod = test-Module $(Get-Module -Name $modName -ListAvailable) #version
+
+      $modPathToTest = "$env:appdata/$modPath"
+      if(!$mod -and Test-Path $modPathToTest) { 
+        $mod = Test-Module $(Import-Module $modPathToTest -Force -Passthru) #{version}
+      }
+      if(!mod) {
+        Get-Item -Path "$env:SystemDrive/Users/*/Appdata/Roaming/$modPath" | % {
+          $mod = Test-Module $(Import-Module $_.FullName -Force -Passthru) #{version}
+          if($mod) { break }
+        }
+      }
+      if(!mod) { 
+        $versionArg = @{}
+        if('#{version}'.length -gt 0) {
+            $versionArg.Version = #{version}
+        }
+
+        cinst $modName -Version @$versionArg
+      }
+
       $identity = [System.Security.Principal.WindowsIdentity]::GetCurrent()
       $plain_password = '#{password}'
       $disable_reboots = $#{disable_reboots}
