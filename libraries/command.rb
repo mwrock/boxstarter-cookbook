@@ -33,7 +33,7 @@ module BoxstarterLibrary
       }
 
       Import-Module "$env:appdata/boxstarter/Boxstarter.Chocolatey/Boxstarter.Chocolatey.psd1"
-      $result = Install-BoxstarterPackage @params -verbose
+      $result = Install-BoxstarterPackage @params
 
       if($result.errors.count -gt 0) {
         Write-Output "ERROR SUMMARY:"
