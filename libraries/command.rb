@@ -1,4 +1,4 @@
-module Boxstarter
+module BoxstarterLibrary
   module Helper
     def command(password, chef_client_enabled, is_remote, temp_dir, disable_reboots)
       command = <<-EOS

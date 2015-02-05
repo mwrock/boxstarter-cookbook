@@ -1,4 +1,4 @@
-module Boxstarter
+module BoxstarterLibrary
   module Helper
     def check_process_tree(parent, attr, match)
       wmi = ::WIN32OLE.connect("winmgmts://") 
